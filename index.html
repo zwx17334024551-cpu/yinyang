@@ -7,26 +7,42 @@
     <style>
         :root {
             --primary-gold: #D4AF37;
+            --primary-gold-light: #F3E5AB;
             --dark-jade: #1A2421;
             --bg-dark: #0D1110;
             --text-light: #E8EBE9;
             --text-dim: #A0AAB2;
-            --glass-bg: rgba(26, 36, 33, 0.6);
-            --glass-border: rgba(212, 175, 55, 0.2);
+            --glass-bg: rgba(20, 25, 23, 0.65);
+            --glass-border: rgba(212, 175, 55, 0.25);
         }
+
+        /* 1. 滚动条美化 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.5); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-gold); }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: "Noto Serif SC", "Songti SC", serif; /* 衬线字体凸显中式高级感 */
-            background: linear-gradient(135deg, var(--bg-dark), var(--dark-jade));
+            font-family: "Noto Serif SC", "Songti SC", "STZhongsong", serif;
             color: var(--text-light);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
-                              radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.05), transparent 25%);
+            
+            /* 2. 背景图与高级遮罩融合 */
+            background-color: var(--bg-dark);
+            background-image: 
+                /* 渐变遮罩层：压暗背景以突出前景文字 */
+                linear-gradient(135deg, rgba(13, 17, 16, 0.85), rgba(26, 36, 33, 0.75)),
+                /* 用户提供的背景图 */
+                url('bj.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
         }
 
         .container {
@@ -38,42 +54,66 @@
             padding: 40px 0;
         }
 
-        /* 玻璃拟物化卡片 */
+        /* 3. 玻璃拟物化卡片及入场动画 */
         .glass-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 35px 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
             position: relative;
             overflow: hidden;
+            opacity: 0;
+            animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* 给右侧卡片加上延迟，形成错落有致的感觉 */
+        #result-area.glass-card {
+            animation-delay: 0.2s;
         }
 
         .glass-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 4px;
+            top: 0; left: 0; width: 100%; height: 3px;
             background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+        }
+
+        /* 4. 添加的 ys.png 悬浮特效 */
+        .logo-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: -10px;
+        }
+        .logo-img {
+            width: 80px;  /* 如果图很大，可以适当调整这个数值 */
+            height: 80px;
+            object-fit: contain;
+            animation: floatUpDown 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
         }
 
         h1, h2, h3 {
             color: var(--primary-gold);
             font-weight: normal;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin-top: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         h1 {
             text-align: center;
-            font-size: 28px;
+            font-size: 26px;
             margin-bottom: 30px;
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
             padding-bottom: 15px;
+            color: var(--primary-gold-light);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         label {
@@ -86,89 +126,133 @@
 
         select, input, textarea {
             width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            color: var(--text-light);
-            padding: 12px;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: var(--primary-gold-light);
+            padding: 14px;
+            border-radius: 10px;
             font-size: 15px;
             font-family: inherit;
             outline: none;
             transition: all 0.3s ease;
             box-sizing: border-box;
+            appearance: none; /* 移除默认下拉箭头风格 */
         }
 
         select:focus, input:focus {
             border-color: var(--primary-gold);
-            box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+            background: rgba(0, 0, 0, 0.6);
         }
 
+        /* 5. 按钮流光动效 */
         button {
             width: 100%;
-            background: linear-gradient(135deg, #A67C00, #D4AF37);
-            color: #000;
+            background: linear-gradient(135deg, #8A6327, #D4AF37, #8A6327);
+            background-size: 200% auto;
+            color: #111;
             border: none;
-            padding: 14px;
+            padding: 16px;
             font-size: 16px;
             font-weight: bold;
-            letter-spacing: 2px;
-            border-radius: 8px;
+            letter-spacing: 3px;
+            border-radius: 10px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             font-family: inherit;
-            margin-top: 10px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+            animation: gradientMove 3s linear infinite;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+            color: #000;
+        }
+
+        button:active {
+            transform: translateY(1px);
         }
 
         /* 诊断结果区域 */
         #result-area {
             display: none;
-            animation: fadeIn 0.8s ease forwards;
         }
 
         .result-section {
             margin-bottom: 20px;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 8px;
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.05), transparent);
+            padding: 18px;
+            border-radius: 10px;
             border-left: 3px solid var(--primary-gold);
+            opacity: 0; /* 配合JS做依次滑入动效 */
+            transform: translateX(20px);
         }
 
         .result-section h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-size: 17px;
+            margin-bottom: 12px;
+            color: var(--primary-gold-light);
         }
 
         .result-section p, .result-section ul {
             font-size: 15px;
-            line-height: 1.8;
+            line-height: 1.9;
             margin: 0;
             color: #D1D8D5;
         }
         
         .result-section li {
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            list-style-type: none;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .result-section li::before {
+            content: '✦';
+            position: absolute;
+            left: 0;
+            color: var(--primary-gold);
+            font-size: 12px;
         }
 
         .tag {
             display: inline-block;
             background: rgba(212, 175, 55, 0.1);
-            color: var(--primary-gold);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 12px;
+            color: var(--primary-gold-light);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 13px;
             border: 1px solid rgba(212, 175, 55, 0.3);
-            margin-right: 8px;
-            margin-bottom: 8px;
+            margin-right: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        /* 定义动画库 */
+        @keyframes floatUpDown {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* 响应式设计 */
@@ -176,6 +260,7 @@
             .container {
                 grid-template-columns: 1fr;
             }
+            .logo-img { width: 60px; height: 60px; }
         }
     </style>
 </head>
@@ -183,7 +268,13 @@
 
 <div class="container">
     <!-- 问诊输入区 -->
-    <div class="glass-card">
+    <div class="glass-card" style="opacity: 1; transform: none; animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
+        
+        <!-- 悬浮的徽标图 ys.png -->
+        <div class="logo-box">
+            <img src="ys.png" alt="标志" class="logo-img" onerror="this.style.display='none'">
+        </div>
+        
         <h1>五骨经筋·智能问诊台</h1>
         
         <div class="form-group">
@@ -211,7 +302,7 @@
         <div class="form-group">
             <label>▶ 患者精神情志状态 (心像)</label>
             <select id="emotion">
-                <option value="normal">相对平稳</option>
+                <option value="normal">情绪相对平稳 / 配合度高</option>
                 <option value="fear">曾受惊吓 / 神经紧绷 / 胆小多疑</option>
                 <option value="anger">强势不服输 / 易怒 / 爱生闷气</option>
                 <option value="depressed">郁郁寡欢 / 思虑过度 / 孤僻</option>
@@ -234,27 +325,27 @@
         <h2>辩证施治结果</h2>
         <div id="tags"></div>
 
-        <div class="result-section">
+        <div class="result-section" id="sec-1">
             <h3>一、 寻筋溯源 (病因剖析)</h3>
             <p id="res-cause"></p>
         </div>
 
-        <div class="result-section">
+        <div class="result-section" id="sec-2">
             <h3>二、 五骨触诊定点 (经脉走向)</h3>
             <ul id="res-palpation"></ul>
         </div>
 
-        <div class="result-section">
+        <div class="result-section" id="sec-3">
             <h3>三、 揉术理疗方案 (手法)</h3>
             <p id="res-technique"></p>
         </div>
 
-        <div class="result-section">
+        <div class="result-section" id="sec-4">
             <h3>四、 心法与引导 (话聊疏导)</h3>
             <p id="res-mindset"></p>
         </div>
 
-        <div class="result-section">
+        <div class="result-section" id="sec-5">
             <h3>五、 功法与保养 (导引自愈)</h3>
             <p id="res-exercise"></p>
         </div>
@@ -323,9 +414,12 @@
         const life = document.getElementById("lifestyle").value;
 
         const resArea = document.getElementById("result-area");
+        
+        // 显示卡片（为了重置动画，先清除再添加）
         resArea.style.display = "block";
         resArea.style.animation = "none";
-        setTimeout(() => resArea.style.animation = "fadeIn 0.8s ease forwards", 10);
+        void resArea.offsetWidth; // 触发重绘
+        resArea.style.animation = "slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards";
 
         // 组装标签
         let tagsHtml = `<span class="tag">外经理疗</span> <span class="tag">三分手七分心</span>`;
@@ -348,9 +442,9 @@
         // 组装触诊点
         let palList = "";
         db.symptoms[sym].palpation.forEach(p => {
-            palList += `<li>🎯 ${p}</li>`;
+            palList += `<li>${p}</li>`;
         });
-        palList += `<li>🔍 寻五骨秘要：沿着骨边、骨角、骨凸、骨凹、骨缝寻找结节。</li>`;
+        palList += `<li>寻五骨秘要：沿着骨边、骨角、骨凸、骨凹、骨缝寻找结节。</li>`;
         document.getElementById("res-palpation").innerHTML = palList;
 
         // 组装手法
@@ -371,6 +465,14 @@
             exercises += "👉 <strong>翡翠汤养生</strong>：早晨空腹饮用清水砂锅煮白菜汤，润肺清肠，排毒化结。";
         }
         document.getElementById("res-exercise").innerHTML = exercises;
+
+        // 执行错落有致的“依次滑入”动画
+        for(let i=1; i<=5; i++){
+            let sec = document.getElementById("sec-" + i);
+            sec.style.animation = "none";
+            void sec.offsetWidth; // 触发重绘
+            sec.style.animation = `slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards ${i * 0.15}s`;
+        }
     }
 </script>
 
